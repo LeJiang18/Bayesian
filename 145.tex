@@ -1,0 +1,234 @@
+\documentclass[paper=letterpaper,fontsize=12pt,twoside,american]{scrartcl}
+%\documentclass{article}
+%\usepackage[a4paper,pdftex]{geometry}	% A4paper margins
+\usepackage[letterpaper]{geometry}
+
+\geometry{bindingoffset=-1.54cm}
+\setlength{\oddsidemargin}{2.54mm}		
+\setlength{\evensidemargin}{2.54mm}
+\addtolength{\textheight}{1.8cm}
+\addtolength{\voffset}{-0.9cm}
+
+
+\usepackage[english]{babel}
+\usepackage{graphicx}
+\usepackage[protrusion=true,expansion=true]{microtype}	
+\usepackage{amsmath,amsfonts,amsthm,amssymb}
+\usepackage{booktabs,array}
+\usepackage{float}
+\usepackage{caption}
+%\usepackage[landscape]{geometry}% 
+%\usepackage{array}
+\usepackage{amsmath}
+\usepackage{setspace}
+\usepackage{etoolbox}
+\usepackage{lipsum}
+\usepackage[compact]{titlesec}
+\usepackage{lipsum}
+\usepackage{titlesec}
+\usepackage{changepage}
+\newlength{\overhang}
+\setlength{\overhang}{\marginparwidth}
+\addtolength{\overhang}{\marginparsep}
+\usepackage{lipsum}
+\usepackage{comment}
+\usepackage{setspace}
+\usepackage{lipsum}
+\setlength\parindent{0pt}
+
+
+\newcommand{\HRule}[1]{\rule{\linewidth}{#1}} 
+\makeatletter						
+\def\printtitle{						
+    {\centering \@title\par}}
+\makeatother									
+
+\makeatletter						
+\def\printauthor{%					
+    {\centering\Large\@author}}				
+\makeatother							
+
+\title{	\normalsize \textsc{}\\[2.0cm]								% 2cm spacing
+			\HRule{5pt} \\						% Upper rule
+			\LARGE \textbf{
+			\uppercase{
+			STA145 Group Project
+			\\Bayesian Logistic Regression
+			}
+			\\(On Diabetes Incidence)
+			}	% Title
+			\HRule{5pt} \\ [2.0cm]	
+			\normalsize \today			% Todays date
+		}
+
+\author{ Members of TEAM : 
+		\\ Yanlin Li 
+		\\ Peilin Qiu 
+		\\ Jun Ma 
+		\\ Linhao Jiang 
+     \\ \texttt{University of California, Davis} \\
+}
+
+
+\begin{document}
+\thispagestyle{empty}		
+\printtitle			
+\vfill
+\printauthor
+\newpage
+\setcounter{page}{1}	
+
+\section{Problem and Motivation}
+The probability of a person having diabetes is believed to be related to various explanatory variables, such as age, gender, cholesterol, weight and etc. In this project we will investigate how to perform Bayesian Logistic Regression (BLR), and apply BLR to a dataset of size 375 individuals across 10 characteristics about diabetes incidence in an African-American community. In standard logistic regression setting, in order to achieve an ideal and accurate estimate, large sample size must be acquired beforehand. In Bayesian Logistic Regression, it gives us the ability to discard such a restraint and to solely establish our focus on the information and our knowledge of the prior distribution.
+
+\section{Model Details}
+
+\subsection{Describe Given Fitted Model}   
+We are modeling the probability of a person having diabetes in an African-American community as a function of some explanatory variables, such as the location in which the person live, age, gender, height, weight, blood pressure, waist and hip measurement by a logistic regression. Mathematically, we consider a binary regression set up in which $Y_{1}$,$Y_{2}$...$Y_{n}$ are independent Bernoulli random variable such that the probability that individual i has diabetes $p_{i}$ will be modeled by $p_{i}$($x_{i}$,$\beta$)  = Pr($Y_{i}$=1$|$$\beta$)  = F($x_{i}^{T}$$\beta$) , where $x_{i}$ is a k$\times$1 column vector of known covariates associated with $Y_{i}$, $\beta$ is a k$\times$1 vector of unknown regression coefficients we are going to work out. F here is our standard logistic distribution function, F(t) = $\frac{e^{t}}{1+e^{t}}$, where t = $x_{i}^{T}\beta$. Let $x_{i}$ be a (k $\times$ 1 column) vector of (k -1) explanatory variables and intercept for individual i.
+
+\subsection{Assumptions of the Model}
+Binary Logistic Regression requires the dependent variable to be binary. Moreover, we require the error terms to be independent. Logistic Regression also requires each observation to be independent, i.e. the model should have little or no multicollinearity. This means that the explanatory variables should be independent from each other. However, there is the option to include interaction effects of categorical variables in the the model, which we did not go into in this project. In addition, while logistic regression does not require the dependent and independent variables to be linearly related, it requires the independent variables to be linearly related to the log odds. Lastly, regular logistic regression requires quite large sample sizes, but not bayes logistic regression. 
+
+\subsection{Prior and Posterior Distribution}
+The joint mass function of  $Y_{1}$,$Y_{2}$...$Y_{n}$ given $Y_{i}$$|$$\beta$ $\sim$ Bin($m_{i}$,$p_{i}$($x_{i}$,$\beta$)), where $p_{i}$($x_{i}$,$\beta$) = F($x_{i}^{T}$$\beta$), and F(t) = $\frac{e^{t}}{1+e^{t}}$, for i = 1,2,...,n; $m_{i}$ = 1, $\forall$i, is given by:
+$$\prod^{n}_{i=1}Pr(Y_{i}=y_{i}|\beta) = \prod^{n}_{i=1}\left[F\left(x_{i}^{T}\beta\right)\right]^{y_{i}}\left[1-F\left(x_{i}^{T}\beta\right)\right]^{1-y_{i}}I_{\left\{0,1\right\}}\left(y_{i}\right)$$
+then the posterior density of $\beta$ given the data $y_{i}$ is: 
+\begin{align*}
+\pi\left(\beta|y\right) & \propto\pi(\beta)\prod^{n}_{i=1}Pr(Y_{i}=y_{i}|\beta)       \hspace{10mm} where \quad\pi(\beta)\sim N(\beta_{0},\Sigma_{0})\\ 
+&\propto |\Sigma_{0}|^{-\frac{1}{2}} \exp{\{-\frac{1}{2}(
+\beta-\beta_{0})^{T}\Sigma^{-1}(\beta-\beta_{0})}\}\prod^{n}_{i=1}\left[F\left(x_{i}^{T}\beta\right)\right]^{y_{i}}\left[1-F\left(x_{i}^{T}\beta\right)\right]^{1-y_{i}}I_{\left\{0,1\right\}}\left(y_{i}\right)
+\end{align*}
+
+\section{Computational Details}
+\subsection{Sampling Method}
+According to Choi and Hobert (2013)'s paper, regardless of the choice of F, the posterior density is intractable, but such posterior density is required for Bayesian inference. Also unfortunately, the Gaussian distribution is not the conjugate prior of the likelihood function in logistic regression. As a result, the posterior distribution is difficult to calculate. Based on Polson, Scott, and Windel (2013)'s paper, binomial likelihoods parameterized by log-odds can be represented as mixtures of Gaussians with respect to a P$\acute{o}$lya-Gamma distribution. Thus we use P$\acute{o}$lya-Gamma to sample from our posterior distribution. Given prior $\pi$($\beta$)$\sim$ $N_p$(b,B), there are two iterate steps involved in the procedures: 
+\begin{align*} 
+\intertext{\hspace{10mm} 1. Draw $\omega_{i}$ ,...,$\omega_{i}$ independently with} (\omega_i| \beta) &\sim PG(1, |x_i^T\beta|) \intertext{\hspace{16mm} and call the observed value $\omega_{i}$ = $\textbf{($\omega_{1}$, $\omega_{1}$,..., $\omega_{n}$)}^\top$}	
+\intertext{\hspace{10mm} 2. Draw ($\beta^{m+1}$ $\sim$ $N_{p}$(m($\omega$),$\Sigma(\omega)$)}
+\intertext{\hspace{20mm}where}
+\Sigma(\omega) &= (X^T \Omega(w) X + B^{-1})^{-1} \\
+m(\omega) &= \Sigma_\omega (X^{T} \kappa + B^{-1}b)\\
+\Omega(\omega) &=n\times n\,diagonal\, matrix\,such\,that\,D_{i,i}=\omega_i\\
+\kappa &= (y_{1}-\frac{m_{1}}{2},...,y_{n}-\frac{m_{n}}{2})^{T}
+\end{align*}
+
+\subsection{Choosing Hyperparameters and Sampling Size}
+We start our $\beta$'s with the initial value of column of 0's. Given prior $\pi$($\beta$)$\sim$ $N_p$(b,B), we need to choose the value for the two hyperparameters b and B. b is the prior mean of $\beta$'s of dimension k$\times$1, and B is the covariance matrix for $\beta_{i}$'s. For simplicity, we choose this covariance matrix to be a diagonal matrix, in the form of C*I, where C is a real number, and I is the identity matrix. When C is big, i.e. our prior of $\beta$'s has a large variance, we have a weak prior. Vice Versa, when C is small, the variance of our prior is small, we have a strong and informative prior of $\beta$'s. We will perform our Bayesian analysis on three set of different prior. 1) We choose the prior mean, b, to be the MLE value computed from GLM function in R, and C to be 1. This is our informative prior in our analysis, we refer this choice as $MLE\_1$ prior later in the project. 2) We choose the prior mean, b, still to be the MLE value computed from GLM function in R, but C to be 1000. This is our weak prior, and we refer this as $MLE\_1000$. 3) We choose the prior mean, b, to be a column of 0's, and C to be 1. This is also an informative prior as the variance is very small, however, in order to distinguish this prior from $MLE\_1$ prior, we refer this choice as the null prior.
+\newline
+\newline
+We choose our sampling size to be 5,000 and burn-in size to be 200 to make sure that all effective sample sizes are at least above 1,000 across all variables and priors. 
+\section{Data Analysis}
+\subsection{Pre-Sampling Variable Selection}
+The dataset originally contain 10 explanatory variables. By plotting the scatter plots between all paired data (Figure 1 in Appendix), we see obvious correlation among hip, waist and weight. Hips has a strong positively linear correlation with waist; waist and hip are also positively and linearly correlate to weight; all with correlation values above 0.8. This makes sense in real life, as a person with greater hip is more likely to have a greater waist measurement, thus weight. However, we thought that blood pressure low may be correlated to blood pressure high, but in fact in our data, they do not have a strong linear correlation (correlation value of only 0.61). By the assumption of logistic model, we should not allow big multicollinearity among our explanatory variables. Thus we updated the weight in our dataset to be the average of waist, hip and weight, and discard the variables: hip and waist. Now we plot the paired scatter plot again (Figure 2), we do not see any obvious linear relationship among any two explanatory variables. 
+
+
+\subsection{Sensitive Analysis}
+In general, parameter estimates and standard error of the posterior distribution with the weak prior using Bayesian should be very similar to those computed using likelihood (glm) settings. Our sampled posterior $\beta$ is consistent with this. Interestingly, posterior estimates using informative prior are also very close to GLM approach, which may first lead to the false conclusion that our prior is not so sensitive. However, the informative posterior estimate using the null prior produce somewhat different results than the previous two, and in fact it is the best prior among the three. So, our prior distribution of $\beta$ is sensitive, and its sensitiveness depends on the hyperparameters we choose. In our case, it is more sensitive to changes in mean than changes in variance. Closer investigation will be performed based on the summary of the sampled posteriors of $\beta$ and value computed from GLM.
+\begin{table}[H]
+\renewcommand{\arraystretch}{1.2}
+\setlength{\tabcolsep}{12pt}
+\caption*{$\beta$ Value Across Different Sampling Methods}
+\centering
+\footnotesize
+\begin{tabular}{l*{5}{|c}}
+\hline\hline			 & $MLE\_1$ & $MLE\_1000$ & GLM      &Null\\\hline
+Intercept, $\beta_{0}$   & -13.7116   &  -15.0373  & -13.5372 & -0.9229\\ 
+\quad\qquad(SE)		     &  (1.0476)  & (4.529)   & (4.4818)   &(1.0019)\\\hline
+Cholesterol, $\beta_{1}$ &  0.0095    & 0.0094    &	  0.0095   & 0.0083	\\ 
+\quad\qquad(SE)			 &	(0.0039)  & (0.0039)  & (0.0034)  &(0.0032) \\\hline
+Location, $\beta_{2}$	 &  -0.1537   & -0.1471   &	 -0.1711   &-0.3028 	\\ 
+\quad\qquad(SE)			 & (0.2631)   & (0.2873)  &	(0.3193)   &(0.2702)\\\hline
+Age, $\beta_{3}$ 		&  0.0547     &  0.0567   &	0.0539 	  &0.0388\\ 
+\quad\qquad(SE)			& (0.0111 )   & (0.0123)  & (0.0128)  &(0.0106)\\\hline
+Gender, $\beta_{4}$		&  -0.3343   &  -0.4551   &	 -0.1792   &0.4018	\\ 
+\quad\qquad(SE)			& (0.3697)    &  (0.5329) & (0.4647)   &(0.396)\\\hline
+Height, $\beta_{5}$		& 0.0584      &  0.0760   &   0.0550  & -0.1057\\ 
+\quad\qquad(SE)			& (0.0262)    &  (0.0658) &  (0.0628) &(0.0254)\\\hline
+Weight, $\beta_{6}$		& 0.0347      & 0.0353    &	 0.0331	 &0.0343\\ 
+\quad\qquad(SE)			& (0.0097)    &  (0.0099) & (0.0097) &(0.0095)\\\hline
+BloodPressureHigh, $\beta_{7}$& 0.0037 & 0.0033   &	0.0046	 &0.0051\\ 
+\quad\qquad(SE)			&  (0.0090)   &  (0.0091) & (0.0091)  &(0.0080)\\\hline
+BloodPressureLow, $\beta_{8}$& -0.0013&  0.0001  &	-0.0011   & -0.0154	\\ 
+\quad\qquad(SE)			& (0.0158)    & (0.0161) & (0.0162)   &(0.0143)\\\hline
+\hline\hline
+Min ESS of $\beta$ 		&1531 	&1414	&NA 	&1773 \\\hline
+\end{tabular}
+\end{table}
+Looking at the standard error of the posterior estimates and GLM. $MLE\_1000$ has the overall greatest SE. The SE of GLM is very close to that of $MLE\_1000$, weak prior. The SE of both informative prior, $MLE\_1000$ and Null are very similar, and slightly smaller than those of the weak prior and GLM. This change can be attributed to the slight additional ‘prior information’ added in the Bayesian analysis. 
+\newline
+\newline
+Effective sample size(ESS) for all $\beta$ of three priors are greater than 1,000. Since we have multiple $\beta$, we look the mim ESS of the $\beta$.$MLE\_1000$, the weak prior, unsurprisingly has the lowest min(ESS) value, followed by informative prior $MLE\_1$. Our Null prior gives us the greatest ESS.  
+\newline
+\newline
+Looking at the 27 trace plots (Figure 3,4,5) for $\beta$ estimates of using different priors. Note that the trace plot of beta 1 with informative prior starts at a very remote initial value, and then it travels to the target distribution indicating that we need to choose a relative burn-in sample size to exclude remote initial value, thus we choose burn-in sample size to be 200. Other 26 trace plots, however, display almost "perfect". The centers of the chains appear at some value with very small fluctuations. This indicates that the chains are mixing well. From these trace plots, we conclude that all three priors are reasonable prior.
+\newline
+\newline
+The ACF value (Figure 6) for $\beta$'s of different priors is consistent with the conclusion above. When the lag-1 and lag-2 autocorrelations of the parameter are large (or decrease very slowly), this indicates the samples are highly dependent (non-stationary). Therefore, if the estimator works reasonable, we expect there is a significant decrease between lag-1 and lag-2 autocorrelations, which happens for all priors here. Moreover, two informative prior have obvious larger change in percent compare to the flat prior, and percentage change of null prior is higher than change of $MLE\_1$, for 8 out of 9 $\beta$'s.
+\newline
+\newline
+From the above analysis of different priors, we conclude that although all three priors are reasonable choices, the two informative $MLE\_1$ and the null priors are for sure better than the weak priors. Moreover, informative null prior is slightly better than $MLE\_1$. 
+
+\subsection{Post-Sampling Variable Selection}
+Our selection rule is, we keep the parameter when the 95\% confidence interval for that does not contain zero. The decision whether to include the variance across 4 methods are recorded into the table below.(We ignore decision about the intercept.)
+
+\begin{table}[H]
+\footnotesize
+%\renewcommand{\arraystretch}{1}
+\setlength{\tabcolsep}{10pt}
+\centering
+\begin{tabular}{l*{5}{|c}}
+\hline\hline			 	& $MLE\_1$ & $MLE\_1000$ & GLM      &Null\\\hline
+Cholesterol, $\beta_{1}$ 	&  Include  & Include    &Include   & Include\\ \hline
+Location, $\beta_{2}$	 	&  NI  		&NI  		&	 NI   &NI 	\\ \hline
+Age, $\beta_{3}$ 			&  Include  &  Include   &Include &Include\\ \hline
+Gender, $\beta_{4}$			&  NI   	&  NI  		 &	 NI   &NI	\\ \hline
+Height, $\beta_{5}$			& Include    & NI  		&   NI    & Include\\ \hline
+Weight, $\beta_{6}$			& Include    & Include   &Include &Include\\ \hline
+BloodPressureHigh, $\beta_{7}$& NI 		& NI  		 &NI	 &NI\\ \hline
+BloodPressureLow, $\beta_{8}$& NI		&  NI  		&	NI   & NI	\\ \hline
+\end{tabular}
+\end{table}
+
+ GLM approach and the weak prior are consistent with each other, and the two informative prior are consistent with each. Since we already decide informative Null prior is the best, we will follow the decision of Null. We discard “location”, “gender”, “BloodPressureHigh” and “BloodPressureLow” and left with only four variables: cholesterol, age, weight and height, which matches the common belief in real life. We run our baysisan regression on the data set again, and finally have $\beta_{Cholesterol}$ = 0.0066, $\beta_{Weight}$ = 0.0274, $\beta_{Age}$ = 0.0431, $\beta_{height}$ = -0.1003 
+
+\subsection{Interpretation of $\beta$}
+Adjusting for the other variables; for every one unit increase in the level of cholesterol, the odds of having diabetes are multiplied by exp(0.0066)= 1.01; for every one year increase in the age of the subject, the odds of having diabetes are multiplied by exp(0.0431)= 1.04; for every one unit increase in the weight of the subject, the odds of having diabetes are multiplied by exp(0.0274)= 1.03; for 1 unit increase in height, the odds of having diabetes are multiplied by exp(-0.1003)= 0.9.
+\section{Lessons Learned}
+We discovered that classical Monte Carlo does not work in this case, because the posterior distribution is not a standard distribution, that is hard to sample from. And it is very time consuming to apply inverse CDF in multivariate scenario. Rejection sampling will be a good approach if we could find a reasonable proposal density. After all, we used Gibbs sampler to converge our target density distribution, and use P$\acute{o}$lya-Gamma to mimicking the missing conditional posterior argument in the logistic case.
+
+
+\newpage
+\section{Appendices: Figures}
+\begin{figure}[h!]
+	\centering	
+	\caption{MultiCollinearity1}		
+	\includegraphics[width=0.45\linewidth]{M1.png}
+	
+	\caption{MultiCollinearity1}	
+	\includegraphics[width=0.45\linewidth]{M2.png}
+	
+	\caption{Informative MLE\_1 Prior Trace Plot}
+	\includegraphics[width=0.45\linewidth]{P1.png}
+	
+	
+\end{figure}
+
+\begin{figure}
+	\centering	
+	\caption{Weak MLE\_1 Prior Trace Plot}			
+	\includegraphics[width=0.5\linewidth]{P2.png}
+	\newline
+	\caption{Null Prior Tace Plot}	
+	\includegraphics[width=0.5\linewidth]{P3.png}
+	\newline
+	\caption{Percentage Change in ACF Comparision}	
+	\includegraphics[width=0.5\linewidth]{ACF.png}
+	
+\end{figure}
+
+\end{document}
+
+
+
+
+
